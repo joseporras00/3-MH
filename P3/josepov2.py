@@ -2,6 +2,8 @@ import random
 import math
 import re
 
+def cls(): print("\n" * 40)
+
 def leerDatos():
     
     datos=[]
@@ -36,25 +38,39 @@ def sacarRestricciones(registro):
     return grafo
 
 def evaluarNodos(grafo, registro):
-    nodos1=grafo[0][1::]
+
+    nodos1=grafo[0][1:]
+    #for i in range(1,len(grafo[0])):
+    #    if(grafo[0][i] != 0):
+    #        nodos1.append(grafo[0][i])
+            
     nodos2=registro[::2]
     cont=0
     for i in range(len(nodos1)):
         for j in range(len(nodos2)):
             if(nodos1[i] == nodos2[j]):
+                #nodos2[j]=0
                 nodos2.pop(j)
                 cont+=1
                 break
-
+    #for i in range(len(nodos2)):
+    #    if(nodos2[i] != 0):
+    #        return False
+    #return True
+    #print(cont)
     if cont==len(nodos1):
         return True
     else:
         return False
 
-
 def evaluarRestricciones(grafo, registro):
 
     #Consigue los nodos del grafo y el registro
+    #nodos1=[]
+    #for i in range(1,len(grafo[0])):
+    #    if(grafo[0][i] != 0):
+    #        nodos1.append(grafo[0][i])
+
     nodos1=grafo[0][1:]
     nodos2=registro[::2]
 
@@ -81,6 +97,7 @@ def evaluarRestricciones(grafo, registro):
 
 
 def crearGrafo(registro):
+    
     nodos=registro[::2]
     valores=registro[1::2]
 
@@ -127,74 +144,69 @@ def adaptarGrafo(grafo, registro):
                                                 
     return grafo
 
-    
-
 def evaluarGrafo(grafo, datos):
     aciertos=0
+    evN=0
     for i in range(len(datos)):
         if(evaluarNodos(grafo, datos[i])):
+            evN+=1
             if(evaluarRestricciones(grafo, datos[i])):
                 aciertos+=1
 
-    return aciertos
-    
+    return evN,aciertos
+            
 
-def hillClimbing(registro,datos):
-    #l=len(datos)
-    ##Creamos una solucion aleatoria
-    #registros = list(range(l))
-    #registro = datos[random.randint(0, len(registros) - 1)]
-    grafo = crearGrafo(registro)
-
-    ##Mejoramos el grafo 
-    for i in range(len(datos)):
-        grafo=adaptarGrafo(grafo,datos[i])
-
-    aciertos=evaluarGrafo(grafo,datos)
-
-    return grafo, aciertos
-
-
-def ils(inicial, datos):
-
-    iteraciones = 20
-    grafoSol = inicial[0]
-    maxAciertos = inicial[1]
-
-    while iteraciones > 0:
-
-        solucion = hillClimbing(datos)
-        if solucion[1] > maxAciertos :
-            grafo = solucion[0]
-            aciertos = solucion[1]
-        iteraciones = iteraciones - 1
-    return grafo, aciertos
-    
 def main():
 
     datos=leerDatos()
 
-    resultados=[]
     
-    for i in range(10):
-        print(i,"\n")
-        sol=hillClimbing(datos[i],datos)
+    grafo=crearGrafo(datos[1])
+    print(grafo)
+
+    for i in range(len(datos)):
+        grafo=adaptarGrafo(grafo,datos[i])
+
+    print(grafo)
+
+    evN,aciertos=evaluarGrafo(grafo, datos)
+    print(evN)
+    print(aciertos)
+    
+    
+    
 
 
-        resultados.append([i,sol[0], sol[1]])
-        i+=1
-    with open("Grafos.csv", "w") as file:
-        file.write(",".join(["N", "Grafo","Aciertos"]))
-        for res in resultados:
-                   file.write(",".join(str(e) for e in res)+"\n")
 
 
 
 
 
+
+
+
+
+
+
+    #Conseguir nodos del grafo mejorado
+    #nodos1=[]
+    #for i in range(len(grafo[0])):
+    #    if(grafo[0][i] != 0):
+    #        nodos1.append(grafo[0][i])
+    #nodos2=registro[::2]
+    #nodosFinal=nodos1
+    #
+    #aux=nodos2
+    #for i in range(len(nodos1)):
+    #    for j in range(len(aux)):
+    #        if(nodos1[i] == aux[j]):
+    #            aux[j]=0
+    #            break
+    #for i in range(len(aux)):
+    #    if(aux[i] != 0):
+    #        nodosFinal.append(aux[i])
 
 
 if __name__ == "__main__":
     main()
-
-
+    #cls()
